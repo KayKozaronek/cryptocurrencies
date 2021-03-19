@@ -35,36 +35,6 @@ print(market_cap_raw.count())
 
 
 
-```python
-%%nose
-
-import inspect
-
-def test_dec6_is_dataframe():
-    assert type(dec6) == pd.core.frame.DataFrame, \
-    'The variable dec6 should contain the DataFrame produced by read_csv()'
-
-def test_market_cap_raw():
-    assert list(market_cap_raw.columns) == ['id', 'market_cap_usd'], \
-    'The variable market_cap_raw should contain the "id" and "market_cap_usd" columns exclusively'
-    
-def test_pandas_imported():
-    assert inspect.ismodule(pd), 'Do not delete the "from pandas import pd" import'
-
-def test_plt_imported():
-    assert inspect.ismodule(plt), 'Do not delete the "import matplotlib.pyplot as plt "import'
-```
-
-
-
-
-
-
-    4/4 tests passed
-
-
-
-
 ## 2. Discard the cryptocurrencies without a market capitalization
 <p>Why do the <code>count()</code> for <code>id</code> and <code>market_cap_usd</code> differ above? It is because some cryptocurrencies listed in coinmarketcap.com have no known market capitalization, this is represented by <code>NaN</code> in the data, and <code>NaN</code>s are not counted by <code>count()</code>. These cryptocurrencies are of little interest to us in this analysis, so they are safe to remove.</p>
 
@@ -80,26 +50,6 @@ print(cap.count())
     id                1031
     market_cap_usd    1031
     dtype: int64
-
-
-
-```python
-%%nose
-
-def test_cap_filtered():
-    assert cap.id.count() == cap.market_cap_usd.count(), 'id and market_cap_usd should have the same count'
-    
-def test_cap_small():
-    assert cap.id.count() == 1031, 'The resulting amount of cryptos should be 1031'
-```
-
-
-
-
-
-
-    2/2 tests passed
-
 
 
 
@@ -126,37 +76,7 @@ ax.set_ylabel(TOP_CAP_YLABEL);
 ```
 
 
-![svg](output_7_0.svg)
-
-
-
-```python
-%%nose
-
-def test_len_cap10():
-    assert len(cap10) == 10, 'cap10 needs to contain 10 rows'
-
-def test_index():
-    assert cap10.index.name == 'id', 'The index should be the "id" column'
-
-def test_perc_correct():
-    assert round(cap10.market_cap_perc.iloc[0], 2) == 56.92, 'the "market_cap_perc" formula is incorrect'
-    
-def test_title():
-    assert ax.get_title() == TOP_CAP_TITLE, 'The title of the plot should be {}'.format(TOP_CAP_TITLE)
-
-def test_ylabel():
-    assert ax.get_ylabel() == TOP_CAP_YLABEL, 'The y-axis should be named {}'.format(TOP_CAP_YLABEL)
-```
-
-
-
-
-
-
-    5/5 tests passed
-
-
+![svg](figures/output_7_0.svg)
 
 
 ## 4. Making the plot easier to read and more informative
@@ -188,38 +108,7 @@ ax.set_xlabel("")
 
 
 
-![svg](output_10_1.svg)
-
-
-
-```python
-%%nose
-
-def test_title():
-    assert ax.get_title() == TOP_CAP_TITLE, 'The title of the plot should be {}'.format(TOP_CAP_TITLE)
-
-def test_ylabel():
-    assert ax.get_ylabel() == 'USD', 'The y-axis should be named {}'.format(TOP_CAP_YLABEL)
-    
-def test_xlabel():
-    assert not ax.get_xlabel(), 'The X label should contain an empty string, currently it contains "{}"'.format(ax.get_xlabel())
-    
-def test_log_scale():
-    assert ax.get_yaxis().get_scale() == 'log', \
-    'The y-axis is not on a log10 scale. Do not transform the data yourself, use the pandas/matplotlib interface'
-    
-#def test_colors():
-#    assert round(ax.patches[1].get_facecolor()[1], 3) == 0.502, 'The colors of the bars are not correct'
-```
-
-
-
-
-
-
-    4/4 tests passed
-
-
+![svg](figures/output_10_1.svg)
 
 
 ## 5. What is going on?! Volatility in cryptocurrencies
@@ -302,28 +191,6 @@ volatility.head()
 
 
 
-
-```python
-%%nose
-
-def test_vol():
-    assert list(volatility.columns) == ['percent_change_24h', 'percent_change_7d'], '"volatility" not loaded correctly'
-    
-def test_vol_index():
-    assert list(volatility.index[:3]) == ['flappycoin', 'credence-coin', 'coupecoin'], \
-    '"volatility" index is not set to "id", or data sorted incorrectly'
-```
-
-
-
-
-
-
-    2/2 tests passed
-
-
-
-
 ## 6. Well, we can already see that things are *a bit* crazy
 <p>It seems you can lose a lot of money quickly on cryptocurrencies. Let's plot the top 10 biggest gainers and top 10 losers in market capitalization.</p>
 
@@ -356,50 +223,7 @@ fig, ax = top10_subplot(volatility.percent_change_24h, DTITLE)
 ```
 
 
-![svg](output_16_0.svg)
-
-
-
-```python
-%%nose
-
-DTITLE = "24 hours top losers and winners"
-
-def test_title():
-    assert fig.get_children()[-1].get_text() == DTITLE, 'The title of the plot should be {}'.format(DTITLE)
-
-def test_subplots():
-    assert len(fig.get_axes()) == 2, 'The plot should have 2 subplots'
-    
-def test_ylabel():
-    fig.get_axes()[0].get_ylabel() == '% change', 'y axis label should be set to % change'
-
-def test_comet_coin():
-    assert round(fig.get_children()[2].get_children()[3].get_height(), 0) == 252.0, \
-    'The data on the winners plot is incorrect'
-  
-def test_tyrocoin():
-    assert abs(round(fig.get_children()[1].get_children()[4].get_height(), 0)) == 77.0, \
-    'The data on the losers plot is incorrect'
-
-#def test_colors():
-#    r, g, b, a = fig.get_axes()[0].patches[1].get_facecolor()
-#    assert round(r, 1) and not round(g, 1) and not round(b, 1), 'The bars on the left plot are not red'
-    
-#def test_colors2():
-#    r, g, b, a = fig.get_axes()[1].patches[1].get_facecolor()
-#    assert not round(r, 1) and not round(g, 1) and round(b, 1), 'The bars on the left plot are not blue'
-    
-
-```
-
-
-
-
-
-
-    5/5 tests passed
-
+![svg](figures/output_16_0.svg)
 
 
 
@@ -420,48 +244,7 @@ fig, ax = top10_subplot(volatility7d.percent_change_7d, WTITLE)
 ```
 
 
-![svg](output_19_0.svg)
-
-
-
-```python
-%%nose
-
-WTITLE = "Weekly top losers and winners"
-
-def test_title():
-    assert fig.get_children()[-1].get_text() == WTITLE, 'The title of the plot should be {}'.format(WTITLE)
-
-def test_subplots():
-    assert len(fig.get_axes()) == 2, 'The plot should have 2 subplots'
-    
-def test_ylabel():
-    fig.get_axes()[0].get_ylabel() == '% change', "y axis label should be set to '% change'"
-   
-#def test_colors():
-#    r, g, b, a = fig.get_axes()[0].patches[1].get_facecolor()
-#    assert round(r, 1) and not round(g, 1) and not round(b, 1), 'The bars on the left plot are not red'
-#    
-#def test_colors2():
-#    r, g, b, a = fig.get_axes()[1].patches[1].get_facecolor()
-#    assert not round(r, 1) and not round(g, 1) and round(b, 1), 'The bars on the left plot are not blue'
-    
-def test_comet_coin():
-    assert abs(round(fig.get_children()[2].get_children()[3].get_height(), 0)) == 543.0, \
-    'The data on the gainers plot is incorrect'
-  
-def test_tyrocoin():
-    assert abs(round(fig.get_children()[1].get_children()[4].get_height(), 0)) == 87.0, \
-    'The data on the losers plot is incorrect'
-```
-
-
-
-
-
-
-    5/5 tests passed
-
+![svg](figures/output_19_0.svg)
 
 
 
@@ -483,29 +266,6 @@ print(largecaps)
     1      ethereum    4.352945e+10
     2  bitcoin-cash    2.529585e+10
     3          iota    1.475225e+10
-
-
-
-```python
-%%nose
-
-def test_large():
-    assert not largecaps.market_cap_usd.count() < 4, 'You filtered too much'
-    
-def test_small():
-    assert not largecaps.market_cap_usd.count() > 4, "You didn't filter enough"
-    
-def test_order():
-    assert largecaps.iloc[1].id == "ethereum", "The dataset is not in the right order, no need to manipulate it here"
-```
-
-
-
-
-
-
-    3/3 tests passed
-
 
 
 
@@ -540,32 +300,4 @@ plt.bar(LABELS, values);
 ```
 
 
-![svg](output_25_0.svg)
-
-
-
-```python
-%%nose
-
-def test_biggish():
-    assert biggish == 39, 'biggish is not correct'
-    
-def test_micro():
-    assert micro == 96, 'micro is not correct'
-
-def test_nano():
-    assert nano == 896, 'nano is not correct'
-
-def test_lenvalues():
-    assert len(values) == 3, "values list is not correct"
-```
-
-
-
-
-
-
-    4/4 tests passed
-
-
-
+![svg](figures/output_25_0.svg)
