@@ -76,7 +76,7 @@ ax.set_ylabel(TOP_CAP_YLABEL);
 ```
 
 
-![svg](figures/output_7_0.svg)
+![svg](/figures/output_7_0.svg)
 
 
 ## 4. Making the plot easier to read and more informative
@@ -108,7 +108,7 @@ ax.set_xlabel("")
 
 
 
-![svg](figures/output_10_1.svg)
+![svg](/figures/output_10_1.svg)
 
 
 ## 5. What is going on?! Volatility in cryptocurrencies
@@ -223,7 +223,7 @@ fig, ax = top10_subplot(volatility.percent_change_24h, DTITLE)
 ```
 
 
-![svg](figures/output_16_0.svg)
+![svg](/figures/output_16_0.svg)
 
 
 
@@ -244,7 +244,7 @@ fig, ax = top10_subplot(volatility7d.percent_change_7d, WTITLE)
 ```
 
 
-![svg](figures/output_19_0.svg)
+![svg](/figures/output_19_0.svg)
 
 
 
@@ -300,4 +300,4 @@ plt.bar(LABELS, values);
 ```
 
 
-![svg](figures/output_25_0.svg)
+![svg](/figures/output_25_0.svg)
